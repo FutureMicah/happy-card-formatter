@@ -33,7 +33,7 @@ function detectBrand(digits: string): Brand {
 
 function VisaMark() {
   return (
-    <span className="rounded bg-[oklch(0.32_0.12_265)] px-2 py-1 text-[0.7rem] font-bold italic tracking-wide text-primary-foreground">
+    <span className="rounded-md bg-primary-foreground/15 px-2 py-1 text-[0.7rem] font-bold italic tracking-[0.15em] text-primary-foreground ring-1 ring-primary-foreground/25 backdrop-blur-sm">
       VISA
     </span>
   );
@@ -41,9 +41,9 @@ function VisaMark() {
 
 function MastercardMark() {
   return (
-    <span className="flex items-center">
+    <span className="flex items-center" aria-hidden="true">
       <span className="h-5 w-5 rounded-full bg-[oklch(0.62_0.2_25)]" />
-      <span className="-ml-2 h-5 w-5 rounded-full bg-[oklch(0.78_0.16_75)] opacity-90" />
+      <span className="-ml-2 h-5 w-5 rounded-full bg-[oklch(0.8_0.16_75)] opacity-90 mix-blend-screen" />
     </span>
   );
 }
@@ -59,28 +59,62 @@ function Index() {
   const brand = detectBrand(digits);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-secondary px-4 py-12">
+    <main
+      className="flex min-h-dvh items-center justify-center px-4 py-14"
+      style={{ backgroundImage: "var(--gradient-surface)" }}
+    >
       <div className="w-full max-w-md">
-        <div className="mb-6 rounded-2xl bg-primary p-6 text-primary-foreground shadow-lg">
-          <div className="flex items-start justify-between">
-            <div className="h-9 w-12 rounded-md bg-[oklch(0.82_0.13_85)]" />
-            <div className="h-7">{brand === "visa" && <VisaMark />}{brand === "mastercard" && <MastercardMark />}</div>
+        <header className="mb-7 text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-[0.7rem] font-medium uppercase tracking-[0.18em] text-muted-foreground backdrop-blur">
+            Visual demo
+          </span>
+          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-foreground">
+            Payment form preview
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Type to watch formatting and brand detection react in real time.
+          </p>
+        </header>
+
+        {/* Card visual */}
+        <div
+          className="relative mb-7 overflow-hidden rounded-3xl p-6 text-primary-foreground"
+          style={{ backgroundImage: "var(--gradient-card)", boxShadow: "var(--shadow-card)" }}
+        >
+          <span className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-primary-foreground/10 blur-2xl" />
+          <span className="pointer-events-none absolute -bottom-24 -left-10 h-52 w-52 rounded-full bg-accent/25 blur-3xl" />
+
+          <div className="relative flex items-start justify-between">
+            <div className="h-9 w-12 rounded-md bg-gradient-to-br from-[oklch(0.88_0.13_88)] to-[oklch(0.72_0.12_70)] shadow-inner" />
+            <div className="flex h-7 items-center">
+              {brand === "visa" && <VisaMark />}
+              {brand === "mastercard" && <MastercardMark />}
+            </div>
           </div>
-          <p className="mt-8 font-mono text-xl tracking-[0.18em]">
+
+          <p className="relative mt-9 font-mono text-[1.35rem] tracking-[0.2em] tabular-nums drop-shadow-sm">
             {card || "•••• •••• •••• ••••"}
           </p>
-          <div className="mt-6 flex items-end justify-between text-xs uppercase tracking-widest opacity-80">
-            <span className="truncate">{name || "Cardholder name"}</span>
-            <span>{expiry || "MM / YY"}</span>
+
+          <div className="relative mt-7 flex items-end justify-between text-[0.68rem] uppercase tracking-[0.16em]">
+            <span className="min-w-0 truncate opacity-85">{name || "Cardholder name"}</span>
+            <span className="opacity-85">{expiry || "MM / YY"}</span>
           </div>
         </div>
 
-        <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-          <h1 className="text-lg font-semibold text-card-foreground">Payment details</h1>
+        {/* Form */}
+        <section
+          className="rounded-3xl border border-border bg-card/85 p-6 backdrop-blur-xl"
+          style={{ boxShadow: "var(--shadow-panel)" }}
+        >
+          <h2 className="text-base font-semibold tracking-tight text-card-foreground">
+            Payment details
+          </h2>
 
           <div className="mt-5 space-y-4">
-            <Field label="Cardholder name">
+            <Field label="Cardholder name" htmlFor="holder">
               <input
+                id="holder"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Jane Doe"
@@ -88,28 +122,35 @@ function Index() {
               />
             </Field>
 
-            <Field label="Card number">
+            <Field label="Card number" htmlFor="cardnum">
               <div className="relative">
                 <input
+                  id="cardnum"
                   inputMode="numeric"
+                  autoComplete="off"
                   value={card}
                   onChange={(e) => {
                     const v = e.target.value.replace(/\D/g, "").substring(0, 16);
                     setCard(v.replace(/(\d{4})(?=\d)/g, "$1 "));
                   }}
                   placeholder="1234 5678 9012 3456"
-                  className={`${inputCls} pr-16 font-mono`}
+                  className={`${inputCls} pr-20 font-mono tabular-nums tracking-wide`}
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                  {brand === "visa" && <VisaMark />}
+                  {brand === "visa" && (
+                    <span className="rounded-md bg-primary px-2 py-1 text-[0.65rem] font-bold italic tracking-widest text-primary-foreground">
+                      VISA
+                    </span>
+                  )}
                   {brand === "mastercard" && <MastercardMark />}
                 </span>
               </div>
             </Field>
 
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Expiry">
+              <Field label="Expiry" htmlFor="exp">
                 <input
+                  id="exp"
                   inputMode="numeric"
                   value={expiry}
                   onChange={(e) => {
@@ -118,16 +159,18 @@ function Index() {
                     setExpiry(v);
                   }}
                   placeholder="MM / YY"
-                  className={`${inputCls} font-mono`}
+                  className={`${inputCls} font-mono tabular-nums`}
                 />
               </Field>
-              <Field label="CVV">
+              <Field label="CVV" htmlFor="cvv">
                 <input
+                  id="cvv"
                   inputMode="numeric"
+                  autoComplete="off"
                   value={cvv}
                   onChange={(e) => setCvv(e.target.value.replace(/\D/g, "").substring(0, 4))}
                   placeholder="123"
-                  className={`${inputCls} font-mono`}
+                  className={`${inputCls} font-mono tabular-nums`}
                 />
               </Field>
             </div>
@@ -136,18 +179,22 @@ function Index() {
           <button
             type="button"
             onClick={() => setNotice(true)}
-            className="mt-6 w-full rounded-lg bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="mt-6 w-full rounded-xl bg-gradient-to-r from-primary to-primary-glow px-4 py-3.5 text-sm font-semibold tracking-wide text-primary-foreground transition-all duration-200 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card active:scale-[0.99]"
+            style={{ boxShadow: "var(--shadow-panel)" }}
           >
             Pay
           </button>
 
           {notice && (
-            <p className="mt-3 rounded-lg bg-muted px-3 py-2 text-center text-xs text-muted-foreground">
+            <p
+              role="status"
+              className="mt-3 rounded-xl border border-border bg-muted px-3 py-2.5 text-center text-xs text-muted-foreground"
+            >
               This is a visual demo only. No card data is sent or stored.
             </p>
           )}
 
-          <p className="mt-4 text-center text-xs text-muted-foreground">
+          <p className="mt-5 border-t border-border pt-4 text-center text-[0.7rem] uppercase tracking-[0.14em] text-muted-foreground">
             Visual demo only — nothing is submitted or stored
           </p>
         </section>
@@ -157,15 +204,26 @@ function Index() {
 }
 
 const inputCls =
-  "w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-ring";
+  "w-full rounded-xl border border-input bg-background/70 px-3.5 py-3 text-sm text-foreground outline-none transition-all duration-200 placeholder:text-muted-foreground hover:border-ring/50 focus:border-ring focus:bg-background focus:ring-4 focus:ring-ring/15";
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  htmlFor,
+  children,
+}: {
+  label: string;
+  htmlFor: string;
+  children: React.ReactNode;
+}) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
+    <div>
+      <label
+        htmlFor={htmlFor}
+        className="mb-1.5 block text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground"
+      >
         {label}
-      </span>
+      </label>
       {children}
-    </label>
+    </div>
   );
 }
