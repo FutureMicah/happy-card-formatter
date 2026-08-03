@@ -48,6 +48,27 @@ function MastercardMark() {
   );
 }
 
+const SPARKLES: {
+  left: string;
+  top: string;
+  size: string;
+  delay: string;
+  duration: string;
+}[] = [
+  { left: "8%", top: "12%", size: "6px", delay: "0s", duration: "3.2s" },
+  { left: "18%", top: "38%", size: "4px", delay: "1.1s", duration: "4.1s" },
+  { left: "12%", top: "72%", size: "5px", delay: "2.3s", duration: "3.6s" },
+  { left: "30%", top: "8%", size: "3px", delay: "0.6s", duration: "4.6s" },
+  { left: "42%", top: "88%", size: "5px", delay: "1.8s", duration: "3.1s" },
+  { left: "56%", top: "18%", size: "4px", delay: "2.8s", duration: "4.3s" },
+  { left: "68%", top: "62%", size: "6px", delay: "0.3s", duration: "3.9s" },
+  { left: "78%", top: "28%", size: "3px", delay: "1.5s", duration: "3.4s" },
+  { left: "86%", top: "78%", size: "5px", delay: "2.1s", duration: "4.8s" },
+  { left: "92%", top: "44%", size: "4px", delay: "0.9s", duration: "3.7s" },
+  { left: "62%", top: "94%", size: "3px", delay: "3.1s", duration: "4.2s" },
+  { left: "24%", top: "54%", size: "4px", delay: "2.6s", duration: "3.3s" },
+];
+
 function Index() {
   const [card, setCard] = useState("");
   const [expiry, setExpiry] = useState("");
@@ -60,15 +81,38 @@ function Index() {
 
   return (
     <main
-      className="flex min-h-dvh items-center justify-center px-4 py-14"
+      className="relative flex min-h-dvh items-center justify-center overflow-hidden px-4 py-14"
       style={{ backgroundImage: "var(--gradient-surface)" }}
     >
-      <div className="w-full max-w-md [perspective:1200px]">
+      {/* Ambient aurora + glitter field */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="animate-hue absolute inset-0">
+          <span className="animate-aurora absolute -left-24 top-[-10%] h-[26rem] w-[26rem] rounded-full bg-primary/25 blur-[90px]" />
+          <span className="animate-aurora absolute -right-28 top-1/4 h-[24rem] w-[24rem] rounded-full bg-accent/25 blur-[100px] [animation-delay:-7s]" />
+          <span className="animate-aurora absolute bottom-[-12%] left-1/3 h-[22rem] w-[22rem] rounded-full bg-[oklch(0.72_0.16_320)]/20 blur-[110px] [animation-delay:-14s]" />
+        </div>
+        {SPARKLES.map((s, i) => (
+          <span
+            key={i}
+            className="sparkle animate-twinkle"
+            style={{
+              left: s.left,
+              top: s.top,
+              width: s.size,
+              height: s.size,
+              animationDelay: s.delay,
+              animationDuration: s.duration,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative w-full max-w-md [perspective:1200px]">
         <header className="animate-rise-in mb-7 text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-[0.7rem] font-medium uppercase tracking-[0.18em] text-muted-foreground backdrop-blur transition-all duration-300 hover:border-ring/50 hover:bg-card hover:tracking-[0.22em]">
-            Visual demo
+            ✨ Visual demo
           </span>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-foreground">
+          <h1 className="text-shimmer mt-4 text-3xl font-semibold tracking-tight">
             Payment form preview
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
