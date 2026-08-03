@@ -210,7 +210,7 @@ function Index() {
 }
 
 const inputCls =
-  "w-full rounded-xl border border-input bg-background/70 px-3.5 py-3 text-sm text-foreground outline-none transition-all duration-200 placeholder:text-muted-foreground hover:border-ring/50 focus:border-ring focus:bg-background focus:ring-4 focus:ring-ring/15";
+  "w-full rounded-xl border border-input bg-background/70 px-3.5 py-3 text-sm text-foreground outline-none transition-all duration-300 placeholder:text-muted-foreground hover:border-ring/50 hover:bg-background focus:border-ring focus:bg-background focus:shadow-md focus:ring-4 focus:ring-ring/15";
 
 function Field({
   label,
@@ -222,14 +222,15 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="field-lift group/field">
       <label
         htmlFor={htmlFor}
-        className="mb-1.5 block text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground"
+        className="mb-1.5 block text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground transition-colors duration-300 group-focus-within/field:text-foreground"
       >
         {label}
       </label>
       {children}
+
     </div>
   );
 }
