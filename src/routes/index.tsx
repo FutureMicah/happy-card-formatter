@@ -60,15 +60,38 @@ function Index() {
 
   return (
     <main
-      className="flex min-h-dvh items-center justify-center px-4 py-14"
+      className="relative flex min-h-dvh items-center justify-center overflow-hidden px-4 py-14"
       style={{ backgroundImage: "var(--gradient-surface)" }}
     >
-      <div className="w-full max-w-md [perspective:1200px]">
+      {/* Ambient aurora + glitter field */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="animate-hue absolute inset-0">
+          <span className="animate-aurora absolute -left-24 top-[-10%] h-[26rem] w-[26rem] rounded-full bg-primary/25 blur-[90px]" />
+          <span className="animate-aurora absolute -right-28 top-1/4 h-[24rem] w-[24rem] rounded-full bg-accent/25 blur-[100px] [animation-delay:-7s]" />
+          <span className="animate-aurora absolute bottom-[-12%] left-1/3 h-[22rem] w-[22rem] rounded-full bg-[oklch(0.72_0.16_320)]/20 blur-[110px] [animation-delay:-14s]" />
+        </div>
+        {SPARKLES.map((s, i) => (
+          <span
+            key={i}
+            className="sparkle animate-twinkle"
+            style={{
+              left: s.left,
+              top: s.top,
+              width: s.size,
+              height: s.size,
+              animationDelay: s.delay,
+              animationDuration: s.duration,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative w-full max-w-md [perspective:1200px]">
         <header className="animate-rise-in mb-7 text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-[0.7rem] font-medium uppercase tracking-[0.18em] text-muted-foreground backdrop-blur transition-all duration-300 hover:border-ring/50 hover:bg-card hover:tracking-[0.22em]">
-            Visual demo
+            ✨ Visual demo
           </span>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-foreground">
+          <h1 className="text-shimmer mt-4 text-3xl font-semibold tracking-tight">
             Payment form preview
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
