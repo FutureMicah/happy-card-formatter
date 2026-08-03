@@ -48,6 +48,27 @@ function MastercardMark() {
   );
 }
 
+const SPARKLES: {
+  left: string;
+  top: string;
+  size: string;
+  delay: string;
+  duration: string;
+}[] = [
+  { left: "8%", top: "12%", size: "6px", delay: "0s", duration: "3.2s" },
+  { left: "18%", top: "38%", size: "4px", delay: "1.1s", duration: "4.1s" },
+  { left: "12%", top: "72%", size: "5px", delay: "2.3s", duration: "3.6s" },
+  { left: "30%", top: "8%", size: "3px", delay: "0.6s", duration: "4.6s" },
+  { left: "42%", top: "88%", size: "5px", delay: "1.8s", duration: "3.1s" },
+  { left: "56%", top: "18%", size: "4px", delay: "2.8s", duration: "4.3s" },
+  { left: "68%", top: "62%", size: "6px", delay: "0.3s", duration: "3.9s" },
+  { left: "78%", top: "28%", size: "3px", delay: "1.5s", duration: "3.4s" },
+  { left: "86%", top: "78%", size: "5px", delay: "2.1s", duration: "4.8s" },
+  { left: "92%", top: "44%", size: "4px", delay: "0.9s", duration: "3.7s" },
+  { left: "62%", top: "94%", size: "3px", delay: "3.1s", duration: "4.2s" },
+  { left: "24%", top: "54%", size: "4px", delay: "2.6s", duration: "3.3s" },
+];
+
 function Index() {
   const [card, setCard] = useState("");
   const [expiry, setExpiry] = useState("");
