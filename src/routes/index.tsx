@@ -63,9 +63,9 @@ function Index() {
       className="flex min-h-dvh items-center justify-center px-4 py-14"
       style={{ backgroundImage: "var(--gradient-surface)" }}
     >
-      <div className="w-full max-w-md">
-        <header className="mb-7 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-[0.7rem] font-medium uppercase tracking-[0.18em] text-muted-foreground backdrop-blur">
+      <div className="w-full max-w-md [perspective:1200px]">
+        <header className="animate-rise-in mb-7 text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-[0.7rem] font-medium uppercase tracking-[0.18em] text-muted-foreground backdrop-blur transition-all duration-300 hover:border-ring/50 hover:bg-card hover:tracking-[0.22em]">
             Visual demo
           </span>
           <h1 className="mt-4 text-3xl font-semibold tracking-tight text-foreground">
@@ -78,35 +78,40 @@ function Index() {
 
         {/* Card visual */}
         <div
-          className="relative mb-7 overflow-hidden rounded-3xl p-6 text-primary-foreground"
+          className="card-3d sheen animate-rise-in group relative mb-7 overflow-hidden rounded-3xl p-6 text-primary-foreground [animation-delay:80ms]"
           style={{ backgroundImage: "var(--gradient-card)", boxShadow: "var(--shadow-card)" }}
         >
-          <span className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-primary-foreground/10 blur-2xl" />
-          <span className="pointer-events-none absolute -bottom-24 -left-10 h-52 w-52 rounded-full bg-accent/25 blur-3xl" />
+          <span className="animate-glow-pulse pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-primary-foreground/10 blur-2xl" />
+          <span className="animate-glow-pulse pointer-events-none absolute -bottom-24 -left-10 h-52 w-52 rounded-full bg-accent/25 blur-3xl [animation-delay:1.5s]" />
 
           <div className="relative flex items-start justify-between">
-            <div className="h-9 w-12 rounded-md bg-gradient-to-br from-[oklch(0.88_0.13_88)] to-[oklch(0.72_0.12_70)] shadow-inner" />
-            <div className="flex h-7 items-center">
+            <div className="h-9 w-12 rounded-md bg-gradient-to-br from-[oklch(0.88_0.13_88)] to-[oklch(0.72_0.12_70)] shadow-inner transition-transform duration-500 group-hover:scale-105" />
+            <div className="flex h-7 items-center transition-all duration-500 group-hover:-translate-y-0.5">
               {brand === "visa" && <VisaMark />}
               {brand === "mastercard" && <MastercardMark />}
             </div>
           </div>
 
-          <p className="relative mt-9 font-mono text-[1.35rem] tracking-[0.2em] tabular-nums drop-shadow-sm">
+          <p className="relative mt-9 font-mono text-[1.35rem] tabular-nums tracking-[0.2em] drop-shadow-sm transition-all duration-500 group-hover:tracking-[0.24em]">
             {card || "•••• •••• •••• ••••"}
           </p>
 
           <div className="relative mt-7 flex items-end justify-between text-[0.68rem] uppercase tracking-[0.16em]">
-            <span className="min-w-0 truncate opacity-85">{name || "Cardholder name"}</span>
-            <span className="opacity-85">{expiry || "MM / YY"}</span>
+            <span className="min-w-0 truncate opacity-85 transition-opacity duration-300 group-hover:opacity-100">
+              {name || "Cardholder name"}
+            </span>
+            <span className="opacity-85 transition-opacity duration-300 group-hover:opacity-100">
+              {expiry || "MM / YY"}
+            </span>
           </div>
         </div>
 
         {/* Form */}
         <section
-          className="rounded-3xl border border-border bg-card/85 p-6 backdrop-blur-xl"
+          className="animate-rise-in rounded-3xl border border-border bg-card/85 p-6 backdrop-blur-xl transition-shadow duration-500 hover:shadow-lg [animation-delay:160ms]"
           style={{ boxShadow: "var(--shadow-panel)" }}
         >
+
           <h2 className="text-base font-semibold tracking-tight text-card-foreground">
             Payment details
           </h2>
