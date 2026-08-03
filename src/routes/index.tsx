@@ -184,7 +184,7 @@ function Index() {
           <button
             type="button"
             onClick={() => setNotice(true)}
-            className="mt-6 w-full rounded-xl bg-gradient-to-r from-primary to-primary-glow px-4 py-3.5 text-sm font-semibold tracking-wide text-primary-foreground transition-all duration-200 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card active:scale-[0.99]"
+            className="sheen relative mt-6 w-full overflow-hidden rounded-xl bg-gradient-to-r from-primary to-primary-glow px-4 py-3.5 text-sm font-semibold tracking-wide text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 hover:tracking-wider focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card active:translate-y-0 active:scale-[0.985]"
             style={{ boxShadow: "var(--shadow-panel)" }}
           >
             Pay
@@ -193,11 +193,12 @@ function Index() {
           {notice && (
             <p
               role="status"
-              className="mt-3 rounded-xl border border-border bg-muted px-3 py-2.5 text-center text-xs text-muted-foreground"
+              className="animate-rise-in mt-3 rounded-xl border border-border bg-muted px-3 py-2.5 text-center text-xs text-muted-foreground"
             >
               This is a visual demo only. No card data is sent or stored.
             </p>
           )}
+
 
           <p className="mt-5 border-t border-border pt-4 text-center text-[0.7rem] uppercase tracking-[0.14em] text-muted-foreground">
             Visual demo only — nothing is submitted or stored
