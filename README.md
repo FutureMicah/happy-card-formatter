@@ -1,6 +1,6 @@
-# Card Demo Delight
+# Card Delight
 
-<p class="demo-note">Visual demo only — nothing is submitted or stored</p>
+
 </div>
 
 <script>
@@ -47,7 +47,7 @@ e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
 
 // Demo button – does nothing harmful
 document.getElementById('pay-btn').addEventListener('click', () => {
-alert('This is a visual demo only.\nNo card data is sent or stored.');
+alert('make appropriate payment .');
 });
 </script>
 </body>
