@@ -1,280 +1,220 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { ArrowRight, Check, Leaf, LockKeyhole, RotateCcw, Wifi } from "lucide-react";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+
+import jungleCanopy from "@/assets/jungle-canopy.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Card Payment Form Demo — Visual Only" },
+      { title: "Banking Jungle — Virtual Card Experience" },
       {
         name: "description",
-        content:
-          "An interactive credit card form demo with live formatting and brand detection. Nothing is submitted or stored.",
+        content: "An immersive Banking Jungle virtual-card payment simulation with cinematic motion and responsive controls.",
       },
-      { property: "og:title", content: "Card Payment Form Demo — Visual Only" },
+      { property: "og:title", content: "Banking Jungle — Virtual Card Experience" },
       {
         property: "og:description",
-        content:
-          "Interactive credit card form with live formatting and card brand detection. Purely visual — no data is sent.",
+        content: "Enter an immersive jungle-inspired virtual-card payment simulation.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Index,
+  component: BankingJungle,
 });
 
-type Brand = "visa" | "mastercard" | null;
+const POLLEN = Array.from({ length: 28 }, (_, index) => ({
+  left: `${(index * 37) % 97}%`,
+  top: `${(index * 61) % 91}%`,
+  delay: `${(index % 9) * -0.7}s`,
+  size: `${2 + (index % 3)}px`,
+}));
 
-function detectBrand(digits: string): Brand {
-  if (/^4/.test(digits)) return "visa";
-  if (/^5[1-5]/.test(digits) || /^2[2-7]/.test(digits)) return "mastercard";
-  return null;
-}
+const SHARDS = Array.from({ length: 72 }, (_, index) => ({
+  angle: `${index * 5}deg`,
+  distance: `${110 + (index % 7) * 18}px`,
+  delay: `${(index % 8) * 0.015}s`,
+}));
 
-function VisaMark() {
-  return (
-    <span className="rounded-md bg-primary-foreground/15 px-2 py-1 text-[0.7rem] font-bold italic tracking-[0.15em] text-primary-foreground ring-1 ring-primary-foreground/25 backdrop-blur-sm">
-      VISA
-    </span>
-  );
-}
-
-function MastercardMark() {
-  return (
-    <span className="flex items-center" aria-hidden="true">
-      <span className="h-5 w-5 rounded-full bg-[oklch(0.62_0.2_25)]" />
-      <span className="-ml-2 h-5 w-5 rounded-full bg-[oklch(0.8_0.16_75)] opacity-90 mix-blend-screen" />
-    </span>
-  );
-}
-
-const SPARKLES: {
-  left: string;
-  top: string;
-  size: string;
-  delay: string;
-  duration: string;
-}[] = [
-  { left: "8%", top: "12%", size: "6px", delay: "0s", duration: "3.2s" },
-  { left: "18%", top: "38%", size: "4px", delay: "1.1s", duration: "4.1s" },
-  { left: "12%", top: "72%", size: "5px", delay: "2.3s", duration: "3.6s" },
-  { left: "30%", top: "8%", size: "3px", delay: "0.6s", duration: "4.6s" },
-  { left: "42%", top: "88%", size: "5px", delay: "1.8s", duration: "3.1s" },
-  { left: "56%", top: "18%", size: "4px", delay: "2.8s", duration: "4.3s" },
-  { left: "68%", top: "62%", size: "6px", delay: "0.3s", duration: "3.9s" },
-  { left: "78%", top: "28%", size: "3px", delay: "1.5s", duration: "3.4s" },
-  { left: "86%", top: "78%", size: "5px", delay: "2.1s", duration: "4.8s" },
-  { left: "92%", top: "44%", size: "4px", delay: "0.9s", duration: "3.7s" },
-  { left: "62%", top: "94%", size: "3px", delay: "3.1s", duration: "4.2s" },
-  { left: "24%", top: "54%", size: "4px", delay: "2.6s", duration: "3.3s" },
-];
-
-function Index() {
+function BankingJungle() {
   const [card, setCard] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
   const [name, setName] = useState("");
-  const [notice, setNotice] = useState(false);
+  const [amount, setAmount] = useState("249.00");
+  const [flipped, setFlipped] = useState(false);
+  const [phase, setPhase] = useState<"idle" | "processing" | "complete">("idle");
+  const [intro, setIntro] = useState(true);
 
-  const digits = card.replace(/\D/g, "");
-  const brand = detectBrand(digits);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setIntro(false), 1850);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const displayCard = useMemo(() => card || "5311 2468 3513 4592", [card]);
+
+  function handleMove(event: React.MouseEvent<HTMLElement>) {
+    const x = event.clientX / window.innerWidth - 0.5;
+    const y = event.clientY / window.innerHeight - 0.5;
+    event.currentTarget.style.setProperty("--mouse-x", x.toFixed(3));
+    event.currentTarget.style.setProperty("--mouse-y", y.toFixed(3));
+  }
+
+  function submitPayment(event: FormEvent) {
+    event.preventDefault();
+    if (phase !== "idle") return;
+    setPhase("processing");
+    window.setTimeout(() => setPhase("complete"), 1900);
+  }
+
+  function reset() {
+    setPhase("idle");
+    setFlipped(false);
+  }
 
   return (
-    <main
-      className="relative flex min-h-dvh items-center justify-center overflow-hidden px-4 py-14"
-      style={{ backgroundImage: "var(--gradient-surface)" }}
-    >
-      {/* Ambient aurora + glitter field */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="animate-hue absolute inset-0">
-          <span className="animate-aurora absolute -left-24 top-[-10%] h-[26rem] w-[26rem] rounded-full bg-primary/25 blur-[90px]" />
-          <span className="animate-aurora absolute -right-28 top-1/4 h-[24rem] w-[24rem] rounded-full bg-accent/25 blur-[100px] [animation-delay:-7s]" />
-          <span className="animate-aurora absolute bottom-[-12%] left-1/3 h-[22rem] w-[22rem] rounded-full bg-[oklch(0.72_0.16_320)]/20 blur-[110px] [animation-delay:-14s]" />
-        </div>
-        {SPARKLES.map((s, i) => (
-          <span
-            key={i}
-            className="sparkle animate-twinkle"
-            style={{
-              left: s.left,
-              top: s.top,
-              width: s.size,
-              height: s.size,
-              animationDelay: s.delay,
-              animationDuration: s.duration,
-            }}
-          />
+    <main className={`jungle-stage ${phase === "processing" ? "is-processing" : ""} ${phase === "complete" ? "is-complete" : ""}`} onMouseMove={handleMove}>
+      <img src={jungleCanopy} width={1920} height={1080} alt="" className="jungle-backdrop" />
+      <div className="canopy canopy-near" aria-hidden="true" />
+      <div className="canopy canopy-far" aria-hidden="true" />
+      <div className="film-grain" aria-hidden="true" />
+
+      <div className="pollen-field" aria-hidden="true">
+        {POLLEN.map((particle, index) => (
+          <i key={index} style={{ left: particle.left, top: particle.top, width: particle.size, height: particle.size, animationDelay: particle.delay }} />
         ))}
       </div>
 
-      <div className="relative w-full max-w-md [perspective:1200px]">
-        <header className="animate-rise-in mb-7 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-[0.7rem] font-medium uppercase tracking-[0.18em] text-muted-foreground backdrop-blur transition-all duration-300 hover:border-ring/50 hover:bg-card hover:tracking-[0.22em]">
-            ✨ Visual demo
-          </span>
-          <h1 className="text-shimmer mt-4 text-3xl font-semibold tracking-tight">
-            Payment form preview
-          </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Type to watch formatting and brand detection react in real time.
-          </p>
-        </header>
-
-        {/* Card visual */}
-        <div
-          className="card-3d sheen animate-rise-in group relative mb-7 overflow-hidden rounded-3xl p-6 text-primary-foreground [animation-delay:80ms]"
-          style={{ backgroundImage: "var(--gradient-card)", boxShadow: "var(--shadow-card)" }}
-        >
-          <span className="animate-glow-pulse pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-primary-foreground/10 blur-2xl" />
-          <span className="animate-glow-pulse pointer-events-none absolute -bottom-24 -left-10 h-52 w-52 rounded-full bg-accent/25 blur-3xl [animation-delay:1.5s]" />
-
-          <div className="relative flex items-start justify-between">
-            <div className="h-9 w-12 rounded-md bg-gradient-to-br from-[oklch(0.88_0.13_88)] to-[oklch(0.72_0.12_70)] shadow-inner transition-transform duration-500 group-hover:scale-105" />
-            <div className="flex h-7 items-center transition-all duration-500 group-hover:-translate-y-0.5">
-              {brand === "visa" && <VisaMark />}
-              {brand === "mastercard" && <MastercardMark />}
-            </div>
-          </div>
-
-          <p className="relative mt-9 font-mono text-[1.35rem] tabular-nums tracking-[0.2em] drop-shadow-sm transition-all duration-500 group-hover:tracking-[0.24em]">
-            {card || "•••• •••• •••• ••••"}
-          </p>
-
-          <div className="relative mt-7 flex items-end justify-between text-[0.68rem] uppercase tracking-[0.16em]">
-            <span className="min-w-0 truncate opacity-85 transition-opacity duration-300 group-hover:opacity-100">
-              {name || "Cardholder name"}
-            </span>
-            <span className="opacity-85 transition-opacity duration-300 group-hover:opacity-100">
-              {expiry || "MM / YY"}
-            </span>
-          </div>
+      {intro && (
+        <div className="awakening" aria-hidden="true">
+          <span className="falling-seed" />
+          <span className="impact-ring" />
+          <span className="vine-burst vine-one" />
+          <span className="vine-burst vine-two" />
+          <span className="vine-burst vine-three" />
         </div>
+      )}
 
-        {/* Form */}
-        <section
-          className="animate-rise-in rounded-3xl border border-border bg-card/85 p-6 backdrop-blur-xl transition-shadow duration-500 hover:shadow-lg [animation-delay:160ms]"
-          style={{ boxShadow: "var(--shadow-panel)" }}
-        >
-
-          <h2 className="text-base font-semibold tracking-tight text-card-foreground">
-            Payment details
-          </h2>
-
-          <div className="mt-5 space-y-4">
-            <Field label="Cardholder name" htmlFor="holder">
-              <input
-                id="holder"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Jane Doe"
-                className={inputCls}
-              />
-            </Field>
-
-            <Field label="Card number" htmlFor="cardnum">
-              <div className="relative">
-                <input
-                  id="cardnum"
-                  inputMode="numeric"
-                  autoComplete="off"
-                  value={card}
-                  onChange={(e) => {
-                    const v = e.target.value.replace(/\D/g, "").substring(0, 16);
-                    setCard(v.replace(/(\d{4})(?=\d)/g, "$1 "));
-                  }}
-                  placeholder="1234 5678 9012 3456"
-                  className={`${inputCls} pr-20 font-mono tabular-nums tracking-wide`}
-                />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                  {brand === "visa" && (
-                    <span className="rounded-md bg-primary px-2 py-1 text-[0.65rem] font-bold italic tracking-widest text-primary-foreground">
-                      VISA
-                    </span>
-                  )}
-                  {brand === "mastercard" && <MastercardMark />}
-                </span>
-              </div>
-            </Field>
-
-            <div className="grid grid-cols-2 gap-4">
-              <Field label="Expiry" htmlFor="exp">
-                <input
-                  id="exp"
-                  inputMode="numeric"
-                  value={expiry}
-                  onChange={(e) => {
-                    let v = e.target.value.replace(/\D/g, "").substring(0, 4);
-                    if (v.length >= 3) v = v.substring(0, 2) + " / " + v.substring(2);
-                    setExpiry(v);
-                  }}
-                  placeholder="MM / YY"
-                  className={`${inputCls} font-mono tabular-nums`}
-                />
-              </Field>
-              <Field label="CVV" htmlFor="cvv">
-                <input
-                  id="cvv"
-                  inputMode="numeric"
-                  autoComplete="off"
-                  value={cvv}
-                  onChange={(e) => setCvv(e.target.value.replace(/\D/g, "").substring(0, 4))}
-                  placeholder="123"
-                  className={`${inputCls} font-mono tabular-nums`}
-                />
-              </Field>
-            </div>
+      <div className="jungle-shell">
+        <section className="brand-panel" aria-labelledby="page-title">
+          <div className="brand-lockup">
+            <Leaf size={19} strokeWidth={1.7} aria-hidden="true" />
+            <span>Banking Jungle</span>
           </div>
+          <h1 id="page-title" className="kinetic-title" aria-label="Attractive enough to be remembered">
+            <span>Attractive</span>
+            <span>enough to be</span>
+            <span>remembered</span>
+          </h1>
+          <p className="brand-copy">A virtual-card ritual shaped by the wild.</p>
+          <div className="signal-line"><span /> Living network · secure simulation</div>
+        </section>
 
-          <button
-            type="button"
-            onClick={() => setNotice(true)}
-            className="sheen relative mt-6 w-full overflow-hidden rounded-xl bg-gradient-to-r from-primary to-primary-glow px-4 py-3.5 text-sm font-semibold tracking-wide text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110 hover:tracking-wider focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card active:translate-y-0 active:scale-[0.985]"
-            style={{ boxShadow: "var(--shadow-panel)" }}
-          >
-            Pay
-          </button>
+        <section className="experience-panel" aria-label="Virtual card payment">
+          {phase === "complete" ? (
+            <SuccessState amount={amount} onReset={reset} />
+          ) : (
+            <>
+              <button
+                type="button"
+                className="card-scene"
+                onClick={() => setFlipped((value) => !value)}
+                aria-label={flipped ? "Show front of virtual card" : "Show back of virtual card"}
+              >
+                <span className={`living-card ${flipped ? "is-flipped" : ""}`}>
+                  <span className="card-face card-front">
+                    <span className="moss-pattern" aria-hidden="true" />
+                    <span className="card-topline">
+                      <span className="leaf-mark"><Leaf size={22} /></span>
+                      <span className="card-brand">Banking Jungle</span>
+                      <Wifi size={24} className="contactless" aria-hidden="true" />
+                    </span>
+                    <span className="chip" aria-hidden="true"><i /><i /><i /></span>
+                    <span className="card-number">{displayCard}</span>
+                    <span className="card-bottom">
+                      <span><small>Cardholder</small>{name || "Jungle Explorer"}</span>
+                      <span><small>Valid thru</small>{expiry || "12 / 27"}</span>
+                    </span>
+                  </span>
+                  <span className="card-face card-back">
+                    <span className="magstripe" />
+                    <span className="nfc-ripple"><Wifi size={38} /></span>
+                    <span className="flip-note">Tap to return</span>
+                  </span>
+                </span>
+              </button>
 
-          {notice && (
-            <p
-              role="status"
-              className="animate-rise-in mt-3 rounded-xl border border-border bg-muted px-3 py-2.5 text-center text-xs text-muted-foreground"
-            >
-              This is a visual demo only. No card data is sent or stored.
-            </p>
+              <form className="payment-glass" onSubmit={submitPayment}>
+                <div className="form-heading">
+                  <div><span>Secure transaction</span><h2>Complete payment</h2></div>
+                  <LockKeyhole size={19} aria-hidden="true" />
+                </div>
+
+                <div className="field-grid">
+                  <Field label="Amount" htmlFor="amount" wide>
+                    <div className="amount-wrap"><span>$</span><input id="amount" aria-label="Payment amount" inputMode="decimal" value={amount} onChange={(event) => setAmount(event.target.value.replace(/[^0-9.]/g, ""))} /></div>
+                  </Field>
+                  <Field label="Cardholder name" htmlFor="holder" wide>
+                    <input id="holder" aria-label="Cardholder name" autoComplete="cc-name" value={name} onChange={(event) => setName(event.target.value)} placeholder="Jungle Explorer" />
+                  </Field>
+                  <Field label="Card number" htmlFor="card-number" wide>
+                    <input id="card-number" aria-label="Virtual card number" inputMode="numeric" autoComplete="cc-number" value={card} onChange={(event) => { const digits = event.target.value.replace(/\D/g, "").slice(0, 16); setCard(digits.replace(/(\d{4})(?=\d)/g, "$1 ")); }} placeholder="0000 0000 0000 0000" />
+                  </Field>
+                  <Field label="Expiry" htmlFor="expiry">
+                    <input id="expiry" aria-label="Expiry date" inputMode="numeric" autoComplete="cc-exp" value={expiry} onChange={(event) => { let digits = event.target.value.replace(/\D/g, "").slice(0, 4); if (digits.length > 2) digits = `${digits.slice(0, 2)} / ${digits.slice(2)}`; setExpiry(digits); }} placeholder="MM / YY" />
+                  </Field>
+                  <Field label="CVV" htmlFor="cvv">
+                    <input id="cvv" aria-label="Security code" type="password" inputMode="numeric" autoComplete="cc-csc" value={cvv} onChange={(event) => setCvv(event.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="•••" />
+                  </Field>
+                </div>
+
+                <JungleButton disabled={phase === "processing"}>
+                  {phase === "processing" ? "Sealing transaction" : `Pay $${amount || "0.00"}`}
+                  <ArrowRight size={18} aria-hidden="true" />
+                </JungleButton>
+                <p className="simulation-note">Visual simulation only · no real bank card is charged or stored</p>
+              </form>
+            </>
           )}
 
-
-          <p className="mt-5 border-t border-border pt-4 text-center text-[0.7rem] uppercase tracking-[0.14em] text-muted-foreground">
-            Visual demo only — nothing is submitted or stored
-          </p>
+          {phase === "processing" && <PaymentRitual />}
         </section>
       </div>
     </main>
   );
 }
 
-const inputCls =
-  "w-full rounded-xl border border-input bg-background/70 px-3.5 py-3 text-sm text-foreground outline-none transition-all duration-300 placeholder:text-muted-foreground hover:border-ring/50 hover:bg-background focus:border-ring focus:bg-background focus:shadow-md focus:ring-4 focus:ring-ring/15";
+function Field({ label, htmlFor, wide, children }: { label: string; htmlFor: string; wide?: boolean; children: ReactNode }) {
+  return <label className={`jungle-field ${wide ? "field-wide" : ""}`} htmlFor={htmlFor}><span>{label}</span>{children}</label>;
+}
 
-function Field({
-  label,
-  htmlFor,
-  children,
-}: {
-  label: string;
-  htmlFor: string;
-  children: React.ReactNode;
-}) {
+function JungleButton({ children, disabled }: { children: ReactNode; disabled: boolean }) {
+  return <button type="submit" disabled={disabled} className="jungle-button">{children}</button>;
+}
+
+function PaymentRitual() {
   return (
-    <div className="field-lift group/field">
-      <label
-        htmlFor={htmlFor}
-        className="mb-1.5 block text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground transition-colors duration-300 group-focus-within/field:text-foreground"
-      >
-        {label}
-      </label>
-      {children}
+    <div className="ritual" role="status" aria-live="polite" aria-label="Processing simulated payment">
+      <div className="shard-field" aria-hidden="true">
+        {SHARDS.map((shard, index) => <i key={index} style={{ "--angle": shard.angle, "--distance": shard.distance, animationDelay: shard.delay } as React.CSSProperties} />)}
+      </div>
+      <div className="holo-lock"><LockKeyhole size={54} /></div>
+      <p>Securing the canopy</p>
+    </div>
+  );
+}
 
+function SuccessState({ amount, onReset }: { amount: string; onReset: () => void }) {
+  return (
+    <div className="success-state" role="status" aria-live="polite">
+      <div className="crystal-wrap"><div className="emerald-crystal"><Check size={42} /></div><span className="liquid-drop" /></div>
+      <p className="success-kicker">Transaction sealed</p>
+      <h2>Payment complete</h2>
+      <p className="success-amount">${amount || "0.00"}</p>
+      <p className="transaction-id">SIM · JGL-8F2A-49C1</p>
+      <button type="button" className="reset-button" onClick={onReset}><RotateCcw size={16} /> New simulation</button>
+      <p className="simulation-note">Visual simulation only · no funds moved</p>
     </div>
   );
 }
