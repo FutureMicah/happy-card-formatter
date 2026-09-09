@@ -1,5 +1,4 @@
 import html2canvas from 'html2canvas';
-
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, Check, Leaf, LockKeyhole, RotateCcw, Wifi } from "lucide-react";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
